@@ -1,9 +1,9 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from '@/app.module';
-import { AuthService } from '@/modules/auth/auth.service';
-import { RegisterDto } from '@/modules/auth/dto/register.dto';
-import { RegisterResponseDto } from '@/modules/auth/dto/register-response.dto';
-import * as readline from 'readline';
+import { NestFactory } from "@nestjs/core";
+import { AppModule } from "@/app.module";
+import { AuthService } from "@/modules/auth/auth.service";
+import { RegisterDto } from "@/modules/auth/dto/register.dto";
+import { RegisterResponseDto } from "@/modules/auth/dto/register-response.dto";
+import * as readline from "readline";
 
 interface CreateUserOptions {
   email?: string;
@@ -16,7 +16,7 @@ interface CreateUserOptions {
 
 async function createUserCommand(options: CreateUserOptions = {}) {
   const app = await NestFactory.createApplicationContext(AppModule, {
-    logger: ['error', 'warn'],
+    logger: ["error", "warn"],
   });
 
   const authService = app.get(AuthService);
@@ -29,7 +29,7 @@ async function createUserCommand(options: CreateUserOptions = {}) {
     } else {
       if (!options.email || !options.name || !options.password) {
         console.error(
-          '❌ Для неинтерактивного режима необходимо указать email, name и password',
+          "❌ Для неинтерактивного режима необходимо указать email, name и password",
         );
         process.exit(1);
       }
@@ -42,16 +42,16 @@ async function createUserCommand(options: CreateUserOptions = {}) {
       };
     }
 
-    console.log('🔄 Создание пользователя...');
+    console.log("🔄 Создание пользователя...");
     const result: RegisterResponseDto = await authService.register(userData);
 
-    console.log('✅ Пользователь успешно создан!');
+    console.log("✅ Пользователь успешно создан!");
     console.log(`📧 Email: ${result.user.email}`);
     console.log(`👤 Имя: ${result.user.name}`);
     console.log(`🔑 UUID: ${result.user.uuid}`);
-    console.log(`🏢 Проект: ${result.user.projectUuid || 'Не указан'}`);
+    console.log(`🏢 Проект: ${result.user.projectUuid || "Не указан"}`);
     console.log(
-      `👔 Роль: ${result.user.role?.type || result.user.role || 'Не указана'}`,
+      `👔 Роль: ${result.user.role?.type || result.user.role || "Не указана"}`,
     );
     console.log(
       `📅 Создан: ${
@@ -61,8 +61,8 @@ async function createUserCommand(options: CreateUserOptions = {}) {
       }`,
     );
   } catch (error: unknown) {
-    console.error('❌ Ошибка при создании пользователя:');
-    if (error && typeof error === 'object' && 'response' in error) {
+    console.error("❌ Ошибка при создании пользователя:");
+    if (error && typeof error === "object" && "response" in error) {
       const nestError = error as {
         response?: {
           error?: {
@@ -73,9 +73,9 @@ async function createUserCommand(options: CreateUserOptions = {}) {
         };
       };
       if (nestError.response?.error) {
-        console.error(`   Код: ${nestError.response.error.code || 'N/A'}`);
+        console.error(`   Код: ${nestError.response.error.code || "N/A"}`);
         console.error(
-          `   Сообщение: ${nestError.response.error.message || 'N/A'}`,
+          `   Сообщение: ${nestError.response.error.message || "N/A"}`,
         );
         if (
           nestError.response.error.details &&
@@ -83,7 +83,7 @@ async function createUserCommand(options: CreateUserOptions = {}) {
           nestError.response.error.details.length > 0
         ) {
           console.error(
-            `   Детали: ${nestError.response.error.details.join(', ')}`,
+            `   Детали: ${nestError.response.error.details.join(", ")}`,
           );
         }
       }
@@ -114,27 +114,27 @@ async function promptForUserData(
 
   try {
     const email =
-      initialOptions.email || (await question('📧 Email пользователя: '));
+      initialOptions.email || (await question("📧 Email пользователя: "));
     const name =
-      initialOptions.name || (await question('👤 Имя пользов��теля: '));
+      initialOptions.name || (await question("👤 Имя пользов��теля: "));
 
     let password = initialOptions.password;
     if (!password) {
       password = await question(
-        '🔐 Пароль (мин. 8 символов, должен содержать заглавные, строчные буквы, цифры и спец. ��имволы): ',
+        "🔐 Пароль (мин. 8 символов, должен содержать заглавные, строчные буквы, цифры и спец. ��имволы): ",
       );
     }
 
     const projectUuid =
       initialOptions.projectUuid ||
       (await question(
-        '🏢 UUID проекта (оставьте пустым для автоматического назначен��я): ',
+        "🏢 UUID проекта (оставьте пустым для автоматического назначен��я): ",
       )) ||
       undefined;
     const roleUuid =
       initialOptions.roleUuid ||
       (await question(
-        '👔 UUID роли (оставьте пустым для роли USER по умолчанию): ',
+        "👔 UUID роли (оставьте пустым для роли USER по умолчанию): ",
       )) ||
       undefined;
 
@@ -158,30 +158,30 @@ function parseArgs(): CreateUserOptions {
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
     switch (arg) {
-      case '--email':
+      case "--email":
         options.email = args[++i];
         break;
-      case '--name':
+      case "--name":
         options.name = args[++i];
         break;
-      case '--password':
+      case "--password":
         options.password = args[++i];
         break;
-      case '--project':
+      case "--project":
         options.projectUuid = args[++i];
         break;
-      case '--role':
+      case "--role":
         options.roleUuid = args[++i];
         break;
-      case '--non-interactive':
+      case "--non-interactive":
         options.interactive = false;
         break;
-      case '--help':
+      case "--help":
         printHelp();
         process.exit(0);
         break;
       default:
-        if (arg.startsWith('--')) {
+        if (arg.startsWith("--")) {
           console.error(`❌ Неизвестный аргумент: ${arg}`);
           printHelp();
           process.exit(1);
@@ -233,7 +233,7 @@ if (require.main === module) {
   const options = parseArgs();
 
   createUserCommand(options).catch((error) => {
-    console.error('❌ Критическая ошибка:', error);
+    console.error("❌ Критическая ошибка:", error);
     process.exit(1);
   });
 }

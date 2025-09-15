@@ -4,9 +4,9 @@ import {
   Column,
   CreateDateColumn,
   Index,
-} from 'typeorm';
+} from "typeorm";
 
-@Entity('token_blacklist')
+@Entity("token_blacklist")
 export class TokenBlacklist {
   @PrimaryGeneratedColumn()
   id: number;
@@ -14,10 +14,10 @@ export class TokenBlacklist {
   @Column({ unique: true })
   token_jti: string;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: "timestamp" })
   @Index()
   expires_at: Date;
 
-  @CreateDateColumn({ type: 'timestamp' })
+  @CreateDateColumn({ type: "timestamp" })
   created_at: Date;
 }

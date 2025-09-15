@@ -5,23 +5,23 @@ import {
   NotFoundException,
   HttpException,
   HttpStatus,
-} from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, IsNull } from 'typeorm';
-import * as bcrypt from 'bcryptjs';
-import { User, Role, RoleType, Project, TokenBlacklist } from '@/entities';
-import { LoginDto } from './dto/login.dto';
-import { RegisterDto } from './dto/register.dto';
-import { RegisterResponseDto } from './dto/register-response.dto';
+} from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository, IsNull } from "typeorm";
+import * as bcrypt from "bcryptjs";
+import { User, Role, RoleType, Project, TokenBlacklist } from "@/entities";
+import { LoginDto } from "./dto/login.dto";
+import { RegisterDto } from "./dto/register.dto";
+import { RegisterResponseDto } from "./dto/register-response.dto";
 import {
   AuthResponseDto,
   LogoutResponseDto,
   RefreshResponseDto,
-} from './dto/auth-response.dto';
-import { UserResponseDto } from './dto/user-response.dto';
-import { JwtPayload } from './interfaces/jwt-payload.interface';
-import { v4 as uuidv4 } from 'uuid';
+} from "./dto/auth-response.dto";
+import { UserResponseDto } from "./dto/user-response.dto";
+import { JwtPayload } from "./interfaces/jwt-payload.interface";
+import { v4 as uuidv4 } from "uuid";
 
 @Injectable()
 export class AuthService {
@@ -47,17 +47,17 @@ export class AuthService {
         deletedAt: IsNull(),
         isActive: true,
       },
-      relations: ['role', 'project'],
+      relations: ["role", "project"],
       select: [
-        'uuid',
-        'email',
-        'name',
-        'password',
-        'projectUuid',
-        'roleUuid',
-        'failedLoginAttempts',
-        'lockedUntil',
-        'lastLogin',
+        "uuid",
+        "email",
+        "name",
+        "password",
+        "projectUuid",
+        "roleUuid",
+        "failedLoginAttempts",
+        "lockedUntil",
+        "lastLogin",
       ],
     });
 
@@ -65,8 +65,8 @@ export class AuthService {
       throw new UnauthorizedException({
         success: false,
         error: {
-          code: 'INVALID_CREDENTIALS',
-          message: 'Неверный email или пароль',
+          code: "INVALID_CREDENTIALS",
+          message: "Неверный email или пароль",
           details: [],
         },
       });
@@ -81,9 +81,9 @@ export class AuthService {
         {
           success: false,
           error: {
-            code: 'ACCOUNT_LOCKED',
+            code: "ACCOUNT_LOCKED",
             message:
-              'Аккаунт заблокирован из-за множественных неудачных попыток входа',
+              "Аккаунт заблокирован из-за множественных неудачных попыток входа",
             details: [`Попробуйте снова через ${lockDurationMinutes} минут`],
           },
         },
@@ -98,8 +98,8 @@ export class AuthService {
       throw new UnauthorizedException({
         success: false,
         error: {
-          code: 'INVALID_CREDENTIALS',
-          message: 'Неверный email или пароль',
+          code: "INVALID_CREDENTIALS",
+          message: "Неверный email или пароль",
           details: [],
         },
       });
@@ -125,7 +125,7 @@ export class AuthService {
 
     return {
       success: true,
-      message: 'Успешная авторизация',
+      message: "Успешная авторизация",
       accessToken,
       user: {
         uuid: user.uuid,
@@ -150,7 +150,7 @@ export class AuthService {
 
     return {
       success: true,
-      message: '��спешный выход из системы',
+      message: "��спешный выход из системы",
     };
   }
 
@@ -172,11 +172,11 @@ export class AuthService {
         deletedAt: IsNull(),
         isActive: true,
       },
-      relations: ['role'],
+      relations: ["role"],
     });
 
     if (!user) {
-      throw new UnauthorizedException('Пользователь не найден');
+      throw new UnauthorizedException("Пользователь не найден");
     }
 
     const newJti = uuidv4();
@@ -192,7 +192,7 @@ export class AuthService {
 
     return {
       success: true,
-      message: 'Токен обновлен',
+      message: "Токен обновлен",
       accessToken,
     };
   }
@@ -204,11 +204,11 @@ export class AuthService {
         deletedAt: IsNull(),
         isActive: true,
       },
-      relations: ['role'],
+      relations: ["role"],
     });
 
     if (!user) {
-      throw new NotFoundException('Пользователь не найден');
+      throw new NotFoundException("Пользователь не найден");
     }
 
     return {
@@ -238,14 +238,14 @@ export class AuthService {
         deletedAt: IsNull(),
         isActive: true,
       },
-      relations: ['role', 'project'],
+      relations: ["role", "project"],
     });
   }
 
   private async handleFailedLogin(user: User): Promise<void> {
-    const maxAttempts = parseInt(process.env.MAX_LOGIN_ATTEMPTS || '5', 10);
+    const maxAttempts = parseInt(process.env.MAX_LOGIN_ATTEMPTS || "5", 10);
     const lockDuration = parseInt(
-      process.env.ACCOUNT_LOCK_DURATION || '1800000',
+      process.env.ACCOUNT_LOCK_DURATION || "1800000",
       10,
     ); // 30 минут
 
@@ -266,7 +266,7 @@ export class AuthService {
     await this.tokenBlacklistRepository
       .createQueryBuilder()
       .delete()
-      .where('expires_at < :now', { now: new Date() })
+      .where("expires_at < :now", { now: new Date() })
       .execute();
   }
 
@@ -282,8 +282,8 @@ export class AuthService {
       throw new ConflictException({
         success: false,
         error: {
-          code: 'EMAIL_ALREADY_EXISTS',
-          message: 'Пользователь с таким email уже существует',
+          code: "EMAIL_ALREADY_EXISTS",
+          message: "Пользователь с таким email уже существует",
           details: [],
         },
       });
@@ -299,8 +299,8 @@ export class AuthService {
         throw new NotFoundException({
           success: false,
           error: {
-            code: 'PROJECT_NOT_FOUND',
-            message: 'Указанный проект не найден',
+            code: "PROJECT_NOT_FOUND",
+            message: "Указанный проект не найден",
             details: [],
           },
         });
@@ -308,14 +308,14 @@ export class AuthService {
     } else {
       // Найти проект по умолчанию или создать его
       project = await this.projectRepository.findOne({
-        where: { name: 'Default Project', deletedAt: IsNull() },
+        where: { name: "Default Project", deletedAt: IsNull() },
       });
 
       if (!project) {
         project = this.projectRepository.create({
           uuid: uuidv4(),
-          name: 'Default Project',
-          description: 'Проект по умолчанию',
+          name: "Default Project",
+          description: "Проект по умолчанию",
         });
         await this.projectRepository.save(project);
       }
@@ -331,8 +331,8 @@ export class AuthService {
         throw new NotFoundException({
           success: false,
           error: {
-            code: 'ROLE_NOT_FOUND',
-            message: 'Указанная роль не найдена',
+            code: "ROLE_NOT_FOUND",
+            message: "Указанная роль не найдена",
             details: [],
           },
         });
@@ -350,10 +350,10 @@ export class AuthService {
       if (!role) {
         role = this.roleRepository.create({
           uuid: uuidv4(),
-          name: 'User',
+          name: "User",
           key: `USER_${project.uuid}`,
           type: RoleType.USER,
-          description: 'Роль пользователя по умолчанию',
+          description: "Роль пользователя по умолчанию",
           permissions: [],
           projectUuid: project.uuid,
         });
@@ -382,18 +382,18 @@ export class AuthService {
     // Загрузить пользователя с отношениями д��я возврата
     const userWithRelations = await this.userRepository.findOne({
       where: { uuid: savedUser.uuid },
-      relations: ['role', 'project'],
+      relations: ["role", "project"],
     });
 
     if (!userWithRelations) {
       throw new NotFoundException(
-        'Не удалось загрузить созданного пользователя',
+        "Не удалось загрузить созданного пользователя",
       );
     }
 
     return {
       success: true,
-      message: 'Пользователь успешно создан',
+      message: "Пользователь успешно создан",
       user: userWithRelations,
     };
   }

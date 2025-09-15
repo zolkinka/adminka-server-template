@@ -75,7 +75,7 @@ async function bootstrap() {
   // JSON спецификация (через прямой доступ к express инстансу)
   const httpAdapter = app.getHttpAdapter();
   if (httpAdapter.getType() === "express") {
-    const expressApp = httpAdapter.getInstance() as any;
+    const expressApp = httpAdapter.getInstance();
     expressApp.get("/docs-json", (_req: Request, res: Response) => {
       res.setHeader("Content-Type", "application/json; charset=utf-8");
       res.send(document);

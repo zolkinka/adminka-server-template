@@ -6,19 +6,19 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   OneToMany,
-} from 'typeorm';
-import { Role } from './role.entity';
-import { User } from './user.entity';
+} from "typeorm";
+import { Role } from "./role.entity";
+import { User } from "./user.entity";
 
-@Entity('projects')
+@Entity("projects")
 export class Project {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   uuid: string;
 
   @Column({ unique: true })
   name: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: "text", nullable: true })
   description?: string;
 
   @OneToMany(() => Role, (role) => role.project)
@@ -27,12 +27,12 @@ export class Project {
   @OneToMany(() => User, (user) => user.project)
   users: User[];
 
-  @CreateDateColumn({ type: 'datetime' })
+  @CreateDateColumn({ type: "datetime" })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'datetime' })
+  @UpdateDateColumn({ type: "datetime" })
   updatedAt: Date;
 
-  @DeleteDateColumn({ type: 'datetime', nullable: true })
+  @DeleteDateColumn({ type: "datetime", nullable: true })
   deletedAt?: Date | null;
 }

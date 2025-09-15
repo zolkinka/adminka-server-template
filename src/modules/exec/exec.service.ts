@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { exec as cpExec } from 'child_process';
-import { promisify } from 'util';
+import { Injectable } from "@nestjs/common";
+import { exec as cpExec } from "child_process";
+import { promisify } from "util";
 
 const exec = promisify(cpExec);
 

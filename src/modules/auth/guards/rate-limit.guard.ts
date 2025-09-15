@@ -4,8 +4,8 @@ import {
   ExecutionContext,
   HttpException,
   HttpStatus,
-} from '@nestjs/common';
-import { Request } from 'express';
+} from "@nestjs/common";
+import { Request } from "express";
 
 interface RateLimitData {
   attempts: number;
@@ -16,11 +16,11 @@ interface RateLimitData {
 export class RateLimitGuard implements CanActivate {
   private readonly attempts = new Map<string, RateLimitData>();
   private readonly maxAttempts = parseInt(
-    process.env.RATE_LIMIT_MAX || '5',
+    process.env.RATE_LIMIT_MAX || "5",
     10,
   );
   private readonly windowMs = parseInt(
-    process.env.RATE_LIMIT_WINDOW || '900000',
+    process.env.RATE_LIMIT_WINDOW || "900000",
     10,
   ); // 15 минут
 
@@ -45,8 +45,8 @@ export class RateLimitGuard implements CanActivate {
         {
           success: false,
           error: {
-            code: 'RATE_LIMIT_EXCEEDED',
-            message: 'Превышено количество попыток входа. Попробуйте позже.',
+            code: "RATE_LIMIT_EXCEEDED",
+            message: "Превышено количество попыток входа. Попробуйте позже.",
             details: [
               `Попробуйте снова через ${Math.ceil((data.resetTime - now) / 60000)} минут`,
             ],
@@ -62,8 +62,8 @@ export class RateLimitGuard implements CanActivate {
 
   private getKey(request: Request): string {
     // Используем IP + email для более точного ограничения
-    const ip = request.ip || request.connection.remoteAddress || 'unknown';
-    const email = request.body?.email || 'anonymous';
+    const ip = request.ip || request.connection.remoteAddress || "unknown";
+    const email = request.body?.email || "anonymous";
     return `${ip}:${email}`;
   }
 

@@ -3,11 +3,11 @@ import {
   CanActivate,
   ExecutionContext,
   ForbiddenException,
-} from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { ROLES_KEY } from '../decorators/roles.decorator';
-import { RoleType } from '@/entities/role.entity';
-import { User } from '@/entities';
+} from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
+import { ROLES_KEY } from "../decorators/roles.decorator";
+import { RoleType } from "@/entities/role.entity";
+import { User } from "@/entities";
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -29,9 +29,9 @@ export class RolesGuard implements CanActivate {
       throw new ForbiddenException({
         success: false,
         error: {
-          code: 'ACCESS_DENIED',
-          message: 'Недостаточно прав для выполнения операции',
-          details: ['Пользователь не имеет необходимых ролей'],
+          code: "ACCESS_DENIED",
+          message: "Недостаточно прав для выполнения операции",
+          details: ["Пользователь не имеет необходимых ролей"],
         },
       });
     }
@@ -42,9 +42,9 @@ export class RolesGuard implements CanActivate {
       throw new ForbiddenException({
         success: false,
         error: {
-          code: 'INSUFFICIENT_PERMISSIONS',
-          message: 'Недостаточно прав для выполнения операции',
-          details: [`Требуется одна из ролей: ${requiredRoles.join(', ')}`],
+          code: "INSUFFICIENT_PERMISSIONS",
+          message: "Недостаточно прав для выполнения операции",
+          details: [`Требуется одна из ролей: ${requiredRoles.join(", ")}`],
         },
       });
     }

@@ -2,9 +2,9 @@ import {
   Injectable,
   NestMiddleware,
   BadRequestException,
-} from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
-import * as validator from 'validator';
+} from "@nestjs/common";
+import { Request, Response, NextFunction } from "express";
+import * as validator from "validator";
 
 @Injectable()
 export class ValidationMiddleware implements NestMiddleware {
@@ -28,7 +28,7 @@ export class ValidationMiddleware implements NestMiddleware {
   private sanitizeObject(obj: any): void {
     for (const key in obj) {
       if (obj.hasOwnProperty(key)) {
-        if (typeof obj[key] === 'string') {
+        if (typeof obj[key] === "string") {
           // Удалить потенциально опасные символы
           obj[key] = validator.escape(obj[key].trim());
 
@@ -37,13 +37,13 @@ export class ValidationMiddleware implements NestMiddleware {
             throw new BadRequestException({
               success: false,
               error: {
-                code: 'INVALID_INPUT',
-                message: 'Обнаружены недопустимые символы в данных',
+                code: "INVALID_INPUT",
+                message: "Обнаружены недопустимые символы в данных",
                 details: [`Поле ${key} содержит недопустимые символы`],
               },
             });
           }
-        } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+        } else if (typeof obj[key] === "object" && obj[key] !== null) {
           this.sanitizeObject(obj[key]);
         }
       }

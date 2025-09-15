@@ -5,8 +5,8 @@ import {
   HttpException,
   HttpStatus,
   Logger,
-} from '@nestjs/common';
-import { Response, Request } from 'express';
+} from "@nestjs/common";
+import { Response, Request } from "express";
 
 @Catch()
 export class AuthExceptionFilter implements ExceptionFilter {
@@ -21,8 +21,8 @@ export class AuthExceptionFilter implements ExceptionFilter {
     let errorResponse = {
       success: false,
       error: {
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Внутренняя ошибка сервера',
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Внутренняя ошибка сервера",
         details: [],
       },
     };
@@ -31,7 +31,7 @@ export class AuthExceptionFilter implements ExceptionFilter {
       status = exception.getStatus();
       const exceptionResponse = exception.getResponse();
 
-      if (typeof exceptionResponse === 'object' && exceptionResponse['error']) {
+      if (typeof exceptionResponse === "object" && exceptionResponse["error"]) {
         errorResponse = exceptionResponse as any;
       } else {
         errorResponse.error.message = exception.message;
@@ -44,15 +44,15 @@ export class AuthExceptionFilter implements ExceptionFilter {
       method: request.method,
       url: request.url,
       ip: request.ip,
-      userAgent: request.get('User-Agent'),
+      userAgent: request.get("User-Agent"),
       error: exception.message,
       stack: exception.stack,
     };
 
     if (status >= 500) {
-      this.logger.error('Server error', logData);
+      this.logger.error("Server error", logData);
     } else if (status >= 400) {
-      this.logger.warn('Client error', logData);
+      this.logger.warn("Client error", logData);
     }
 
     response.status(status).json(errorResponse);

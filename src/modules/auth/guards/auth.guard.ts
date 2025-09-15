@@ -3,11 +3,11 @@ import {
   CanActivate,
   ExecutionContext,
   UnauthorizedException,
-} from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
-import { AuthService } from '../auth.service';
-import { JwtPayload } from '../interfaces/jwt-payload.interface';
+} from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { ConfigService } from "@nestjs/config";
+import { AuthService } from "../auth.service";
+import { JwtPayload } from "../interfaces/jwt-payload.interface";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -19,22 +19,22 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const token = request.cookies?.['auth-token'];
+    const token = request.cookies?.["auth-token"];
 
     if (!token) {
       throw new UnauthorizedException({
         success: false,
         error: {
-          code: 'TOKEN_MISSING',
-          message: 'Токен авторизации отсутствует',
-          details: ['Необходимо войти в систему'],
+          code: "TOKEN_MISSING",
+          message: "Токен авторизации отсутствует",
+          details: ["Необходимо войти в систему"],
         },
       });
     }
 
     try {
       const payload = this.jwtService.verify(token, {
-        secret: this.configService.get<string>('JWT_SECRET'),
+        secret: this.configService.get<string>("JWT_SECRET"),
       });
 
       // Проверить blacklist
@@ -45,9 +45,9 @@ export class AuthGuard implements CanActivate {
         throw new UnauthorizedException({
           success: false,
           error: {
-            code: 'TOKEN_REVOKED',
-            message: 'Токен был отозван',
-            details: ['Необходимо войти в систему заново'],
+            code: "TOKEN_REVOKED",
+            message: "Токен был отозван",
+            details: ["Необходимо войти в систему заново"],
           },
         });
       }
@@ -61,9 +61,9 @@ export class AuthGuard implements CanActivate {
         throw new UnauthorizedException({
           success: false,
           error: {
-            code: 'USER_NOT_FOUND',
-            message: 'Пользователь не найден',
-            details: ['Пользователь может быть удален или деактивирован'],
+            code: "USER_NOT_FOUND",
+            message: "Пользователь не найден",
+            details: ["Пользователь может быть удален или деактивирован"],
           },
         });
       }
@@ -71,24 +71,24 @@ export class AuthGuard implements CanActivate {
       request.user = user;
       return true;
     } catch (error) {
-      if (error.name === 'JsonWebTokenError') {
+      if (error.name === "JsonWebTokenError") {
         throw new UnauthorizedException({
           success: false,
           error: {
-            code: 'TOKEN_INVALID',
-            message: 'Недействительный токен',
-            details: ['Токен поврежден или имеет неверный формат'],
+            code: "TOKEN_INVALID",
+            message: "Недействительный токен",
+            details: ["Токен поврежден или имеет неверный формат"],
           },
         });
       }
 
-      if (error.name === 'TokenExpiredError') {
+      if (error.name === "TokenExpiredError") {
         throw new UnauthorizedException({
           success: false,
           error: {
-            code: 'TOKEN_EXPIRED',
-            message: 'Токен истек',
-            details: ['Необходимо войти в систему заново'],
+            code: "TOKEN_EXPIRED",
+            message: "Токен истек",
+            details: ["Необходимо войти в систему заново"],
           },
         });
       }

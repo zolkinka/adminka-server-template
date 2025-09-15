@@ -1,5 +1,11 @@
-import { IsString, IsEnum, IsArray, IsNotEmpty, MaxLength } from 'class-validator';
-import { RoleType } from '@/entities/role.entity';
+import {
+  IsString,
+  IsEnum,
+  IsArray,
+  IsNotEmpty,
+  MaxLength,
+} from "class-validator";
+import { RoleType } from "@/entities/role.entity";
 
 export class CreateRoleDto {
   @IsString()

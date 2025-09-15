@@ -6,13 +6,13 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   ManyToOne,
-} from 'typeorm';
-import { Role } from './role.entity';
-import { Project } from './project.entity';
+} from "typeorm";
+import { Role } from "./role.entity";
+import { Project } from "./project.entity";
 
-@Entity('users')
+@Entity("users")
 export class User {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   uuid: string;
 
   @Column({ unique: true })
@@ -27,13 +27,13 @@ export class User {
   @Column({ default: true })
   isActive: boolean;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: "timestamp", nullable: true })
   lastLogin: Date | null;
 
   @Column({ default: 0 })
   failedLoginAttempts: number;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: "timestamp", nullable: true })
   lockedUntil: Date | null;
 
   @Column({ nullable: true })
@@ -42,18 +42,18 @@ export class User {
   @Column()
   projectUuid: string;
 
-  @ManyToOne(() => Role, (role) => role.users, { onDelete: 'SET NULL' })
+  @ManyToOne(() => Role, (role) => role.users, { onDelete: "SET NULL" })
   role: Role;
 
-  @ManyToOne(() => Project, (project) => project.users, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Project, (project) => project.users, { onDelete: "CASCADE" })
   project: Project;
 
-  @CreateDateColumn({ type: 'datetime' })
+  @CreateDateColumn({ type: "datetime" })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'datetime' })
+  @UpdateDateColumn({ type: "datetime" })
   updatedAt: Date;
 
-  @DeleteDateColumn({ type: 'datetime', nullable: true })
+  @DeleteDateColumn({ type: "datetime", nullable: true })
   deletedAt?: Date | null;
 }

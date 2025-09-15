@@ -1,33 +1,33 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from "@nestjs/swagger";
 
 export class ErrorResponseDto {
   @ApiProperty({
     example: false,
-    description: 'Статус успешности операции',
+    description: "Статус успешности операции",
   })
   success: boolean;
 
   @ApiProperty({
-    type: 'object',
+    type: "object",
     properties: {
       code: {
-        type: 'string',
-        example: 'INVALID_CREDENTIALS',
-        description: 'Код ошибки',
+        type: "string",
+        example: "INVALID_CREDENTIALS",
+        description: "Код ошибки",
       },
       message: {
-        type: 'string',
-        example: 'Неверный email или пароль',
-        description: 'Сообщение об ошибке',
+        type: "string",
+        example: "Неверный email или пароль",
+        description: "Сообщение об ошибке",
       },
       details: {
-        type: 'array',
-        items: { type: 'string' },
+        type: "array",
+        items: { type: "string" },
         example: [],
-        description: 'Детали ошибки',
+        description: "Детали ошибки",
       },
     },
-    description: 'Информация об ошибке',
+    description: "Информация об ошибке",
   })
   error: {
     code: string;

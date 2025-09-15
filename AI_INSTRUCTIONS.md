@@ -1,163 +1,112 @@
-# AI Instructions - Adminka Booking Server
+# AI Instructions - Task Manager System
 
-## Общее описание проекта
+## Общая информация о проекте
 
-Это NestJS приложение для системы бронирования с многопроектной архитектурой. Проект представляет собой backend API сервер с аутентификацией и системой ролей.
+Это backend приложение **Task Manager** - системы управления задачами и проектами, построенной на NestJS с TypeORM и PostgreSQL.
 
-## Технический стек
+## Основная сфера деятельности
 
-- **Framework**: NestJS 11.x
-- **Database**: MySQL с TypeORM
-- **Authentication**: JWT с Passport
+Task Manager - это корпоративная система для:
+- Управления задачами и проектами
+- Планирования рабочих процессов
+- Контроля выполнения задач
+- Аналитики производительности команд
+- Управления пользователями и ролями в проектах
+
+## Архитектурные принципы
+
+### Технологический стек
+- **Backend**: NestJS (Node.js)
+- **Database**: PostgreSQL с TypeORM
+- **Authentication**: JWT токены с HTTP-only cookies
+- **API Documentation**: Swagger/OpenAPI
 - **Package Manager**: pnpm
-- **Language**: TypeScript
 
-## Архитектура и структура
+### Структура проекта
+- `src/modules/` - бизнес-модули (auth, roles, exec)
+- `src/entities/` - TypeORM сущности базы данных
+- `src/common/` - общие компоненты (guards, decorators, middleware)
+- `src/database/` - конфигурация БД и миграции
 
-### Основные модули
+### Ключевые сущности
+- **User** - пользователи системы
+- **Role** - роли пользователей (admin, manager, developer, etc.)
+- **Project** - проек��ы с задачами
+- **Task** - задачи в проектах (предполагается)
+- **TokenBlacklist** - заблокированные JWT токены
 
-#### 1. Auth Module (`src/modules/auth/`)
-- **Сервис**: AuthService - управление аутентификацией и регистрацией
-- **Контроллер**: AuthController - API endpoints для auth
-- **Стратегии**: JWT Strategy для валидации токенов
-- **DTO**: LoginDto, RegisterDto, AuthResponseDto, JwtPayload
+## Правила разработки
 
-#### 2. Entities (`src/entities/`)
-Три основные сущности с soft delete поддержкой:
+### Безопасность
+1. Все эндпоинты требуют аутентификации через JwtAuthGuard
+2. JWT токены передаются через HTTP-only cookies
+3. Реализована система rate limiting для входа
+4. Токены добавляются в blacklist при logout/refresh
 
-**Project Entity**:
-- UUID первичный ключ
-- Уникальное имя проекта
-- Описание (опционально)
+### API Design
+1. Используй Swagger декораторы для документации
+2. Все ответы типизированы через DTO
+3. Обработка ошибок через ErrorResponseDto
+4. Валидация входящих данных через ValidationPipe
 
-**User Entity**:
-- UUID первичный ключ
-- Email (уникальный)
-- Хешированный пароль (bcryptjs, 12 rounds)
-- Привязки к роли и проекту
+### База данных
+1. Используй TypeORM entities в `src/entities/`
+2. Миграции создавай в `src/database/migrations/`
+3. UUID для всех primary keys
+4. Soft delete для важных сущностей
 
-### Database Configuration
-
-#### DataSource (`src/database/data-source.ts`)
-- MySQL соединение
-- Конфигурация из environment переменных
-- Миграции в `src/database/migrations/`
-- Entities: Project, User
-- Charset: utf8mb4
-
-#### Environment Variables
+### Структура модулей
 ```
-DB_HOST - хост БД (default: localhost)
-DB_PORT - порт БД (default: 3306)  
-DB_USER/DB_USERNAME - пользователь БД (default: root)
-DB_PASSWORD - пароль БД (default: password)
-DB_NAME/DB_DATABASE - имя БД (default: adminka_booking)
-NODE_ENV - окружение (development/production)
-```
-
-### Scripts и команды
-
-```bash
-# Разработка
-pnpm start:dev          # Запуск в dev режиме
-pnpm build              # Сборка проекта
-
-# База данных
-pnpm db:create          # Создание БД
-pnpm migration:generate # Генерация миграции
-pnpm migration:run      # Выполнение миграций
-pnpm migration:revert   # Откат миграции
-
-# Тестирование
-pnpm test              # Unit тесты
-pnpm test:e2e          # E2E тесты
+module-name/
+├── module-name.controller.ts
+├── module-name.service.ts
+├── module-name.module.ts
+├── dto/
+├── guards/
+├── decorators/
+└── interfaces/
 ```
 
-## Особенности архитектуры
+## Контекст Task Manager
 
-### Многопроектность
-- Каждый пользователь привязан к конкретному проекту
-- Роли создаются в контексте проекта
-- Изоляция данных между проектами
+### Основные функции системы:
+1. **Управление проектами** - создание, редактирование, архивирование
+2. **Управление задачами** - создание, назначение, статусы, приоритеты
+3. **Управление пользователями** - регистрация, роли, права доступа
+4. **Отчетность** - аналитика по проектам и производительности
+5. **Интеграции** - возможность интеграции с внешними системами
 
-### Система ролей и разрешений
-- Три типа ролей: ADMIN, USER, CLIENT
-- Гранулярные разрешения в формате строк
-- Автоматическое создание базовых ролей при создании проекта
+### Роли в системе:
+- **Admin** - полный доступ к системе
+- **Project Manager** - управление проектами и задачами
+- **Developer** - работа с назначенными задачами
+- **Viewer** - только просмотр
 
-### Аутентификация
-- JWT токены с payload: sub, email, projectUuid, roleUuid, permissions
-- Защищенные маршруты через JwtAuthGuard
-- Декораторы @CurrentUser для получения текущего пользователя
+### Бизнес-логика:
+- Проекты могут содержать множество задач
+- Задачи имеют статусы: новая, в работе, на проверке, выполнена
+- Пользователи могут быть назначены на несколько проектов
+- Система логирования всех действий пользователей
 
-### Soft Delete
-- Все основные сущности поддерживают soft delete
-- Поле deletedAt для пометки удаленных записей
-- Фильтрация по IsNull() в запросах
+## Рекомендации для разработки
 
-## Важные файлы конфигурации
+1. **Всегда создавай DTO** для входящих и исходящих данных
+2. **Используй guards** для проверки прав доступа
+3. **Документируй API** через Swagger декораторы
+4. **Валидируй данные** на уровне DTO с class-validator
+5. **Логируй важные действия** пользователей
+6. **Тестируй** критичную бизнес-логику
 
-- `ormconfig.ts` - экспорт DataSource для TypeORM CLI
-- `tsconfig.json` - конфигурация TypeScript с path mapping
-- `nest-cli.json` - настройки NestJS CLI
-- `.env` файлы для переменных окружения
+## Примеры использования
 
-## Типичные паттерны кода
+### Создание нового модуля
+При добавлении нового модуля (например, tasks):
+1. Создай entity в `src/entities/task.entity.ts`
+2. Создай модуль в `src/modules/tasks/`
+3. Добавь соответствующие DTO, guards, decorators
+4. Зарегистрируй в app.module.ts
 
-### Создание пользователя
-```typescript
-// Проверка существующего пользователя
-const existingUser = await this.userRepository.findOne({
-  where: { email, deletedAt: IsNull() }
-});
-
-// Хеширование пароля
-const hashedPassword = await bcrypt.hash(password, 12);
-
-// Создание с связями
-const user = this.userRepository.create({
-  email, name, password: hashedPassword,
-  roleUuid, projectUuid
-});
-```
-
-### Работа с разрешениями
-```typescript
-// JWT payload с разрешениями
-const payload: JwtPayload = {
-  sub: user.uuid,
-  email: user.email, 
-  projectUuid: user.projectUuid,
-  roleUuid: user.roleUuid,
-  permissions: user.role.permissions
-};
-```
-
-### Загрузка с связями
-```typescript
-const user = await this.userRepository.findOne({
-  where: { uuid, deletedAt: IsNull() },
-  relations: ['role', 'project']
-});
-```
-
-## MySQL Особенности
-
-### Проблемы с TEXT полями
-- TEXT колонки не могут иметь DEFAULT значения
-- Используй `simple-json` тип для массивов без default
-- Альтернатива: JSON тип в новых версиях MySQL
-
-### Charset
-- Используется utf8mb4 для полной поддержки Unicode
-- Настроено в DataSource конфигурации
-
-## Рекомендации при разработке
-
-1. **Всегда проверяй на soft delete**: используй `deletedAt: IsNull()` в where условиях
-2. **Изоляция проектов**: включай projectUuid в запросы где необходимо
-3. **Безопасность паролей**: используй bcryptjs с saltRounds >= 12
-4. **Валидация разрешений**: проверяй permissions в JWT payload
-5. **Связи**: загружай relations явно когда они нужны
-6. **Ошибки**: используй правильные HTTP статусы и exception типы
-7. **TypeORM**: предпочитай Repository pattern над прямыми запросами
+### Работа с аутентификацией
+- Используй `@UseGuards(JwtAuthGuard)` для защищенных эндпоинтов
+- Получай текущего пользователя через `@CurrentUser()` decorator
+- Проверяй роли через `@UseGuards(RolesGuard)` и `@Roles()` decorator
