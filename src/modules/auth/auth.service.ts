@@ -20,6 +20,7 @@ import {
   RefreshResponseDto,
 } from "./dto/auth-response.dto";
 import { UserResponseDto } from "./dto/user-response.dto";
+import { RoleResponseDto } from "./dto/role-response.dto";
 import { JwtPayload } from "./interfaces/jwt-payload.interface";
 import { v4 as uuidv4 } from "uuid";
 
@@ -40,7 +41,7 @@ export class AuthService {
   async login(loginDto: LoginDto): Promise<AuthResponseDto> {
     const { email, password } = loginDto;
 
-    // Найти по��ьзователя с паролем
+    // Найти пользователя с паролем
     const user = await this.userRepository.findOne({
       where: {
         email,
@@ -123,15 +124,25 @@ export class AuthService {
 
     const accessToken = this.jwtService.sign(payload);
 
+    const roleResponse: RoleResponseDto = {
+      uuid: user.role.uuid,
+      name: user.role.name,
+      key: user.role.key,
+      type: user.role.type,
+      description: user.role.description,
+      permissions: user.role.permissions,
+    };
+
     return {
       success: true,
       message: "Успешная авторизация",
       accessToken,
+      projectUuid: user.projectUuid,
       user: {
         uuid: user.uuid,
         email: user.email,
         name: user.name,
-        role: user.role.type,
+        role: roleResponse,
         lastLogin: new Date(),
       },
     };
@@ -211,11 +222,20 @@ export class AuthService {
       throw new NotFoundException("Пользователь не найден");
     }
 
+    const roleResponse: RoleResponseDto = {
+      uuid: user.role.uuid,
+      name: user.role.name,
+      key: user.role.key,
+      type: user.role.type,
+      description: user.role.description,
+      permissions: user.role.permissions,
+    };
+
     return {
       uuid: user.uuid,
       email: user.email,
       name: user.name,
-      role: user.role.type,
+      role: roleResponse,
       lastLogin: user.lastLogin,
     };
   }
@@ -379,7 +399,7 @@ export class AuthService {
 
     const savedUser = await this.userRepository.save(newUser);
 
-    // Загрузить пользователя с отношениями д��я возврата
+    // Загрузить пользователя с отношениями для возврата
     const userWithRelations = await this.userRepository.findOne({
       where: { uuid: savedUser.uuid },
       relations: ["role", "project"],

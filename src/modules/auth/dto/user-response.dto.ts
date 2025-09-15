@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { RoleResponseDto } from "./role-response.dto";
 
 export class UserResponseDto {
   @ApiProperty({
@@ -20,10 +21,10 @@ export class UserResponseDto {
   name: string;
 
   @ApiProperty({
-    example: "admin",
-    description: "Роль пользователя",
+    type: RoleResponseDto,
+    description: "Объект роли пользователя",
   })
-  role: string;
+  role: RoleResponseDto;
 
   @ApiProperty({
     example: "2024-01-15T10:30:00Z",

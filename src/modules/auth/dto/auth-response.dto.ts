@@ -21,6 +21,12 @@ export class AuthResponseDto {
   accessToken: string;
 
   @ApiProperty({
+    example: "project-uuid-here",
+    description: "UUID проекта пользователя",
+  })
+  projectUuid: string;
+
+  @ApiProperty({
     type: UserResponseDto,
     description: "Информация о пользователе",
   })
