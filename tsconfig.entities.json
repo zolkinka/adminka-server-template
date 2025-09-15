@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "types/entities",
+    "rootDir": "src/entities"
+  },
+  "include": ["src/entities/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}

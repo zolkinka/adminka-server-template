@@ -1,0 +1,32 @@
+import { Role } from './role.entity';
+import { User } from './user.entity';
+import { Venue } from './venue.entity';
+import { Event } from './event.entity';
+import { EventSession } from './event-session.entity';
+import { TicketType } from './ticket-type.entity';
+import { Ticket } from './ticket.entity';
+import { Customer } from './customer.entity';
+import { Order } from './order.entity';
+import { Payment } from './payment.entity';
+import { CheckinLog } from './checkin-log.entity';
+import { PromoCode } from './promo-code.entity';
+export declare class Project {
+    uuid: string;
+    name: string;
+    description?: string;
+    roles: Role[];
+    users: User[];
+    venues: Venue[];
+    events: Event[];
+    sessions: EventSession[];
+    ticketTypes: TicketType[];
+    tickets: Ticket[];
+    customers: Customer[];
+    orders: Order[];
+    payments: Payment[];
+    checkinLogs: CheckinLog[];
+    promoCodes: PromoCode[];
+    createdAt: Date;
+    updatedAt: Date;
+    deletedAt?: Date | null;
+}
